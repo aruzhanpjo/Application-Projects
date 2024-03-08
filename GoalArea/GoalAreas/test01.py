@@ -1,6 +1,6 @@
 import pandas
 
-data = pandas.read_csv('gen_eds.csv')
+data = pandas.read_csv('GoalArea/GoalAreas/gen_eds.csv')
 
 while True:
     findVal = int(input("How many goal areas do you want to cover? Out of 3\n"))
