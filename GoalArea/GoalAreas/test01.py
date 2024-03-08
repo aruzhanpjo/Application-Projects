@@ -9,23 +9,29 @@ while True:
     print("Invalid input. Please try again.")
 
 # Get goal areas from user
-goalArea = []
+goalArea = set()
 for i in range(findVal):
     val = (input(f"Enter goal area {i + 1}: "))
-    goalArea.append(val)
+    goalArea.add(val)
     
     
 def check_goal_areas(row):
-    areas = row['area'].split(', ')
-    return all(area in areas for area in goalArea)
+    areas = set(row['area'].split(', '))
+    return goalArea.issubset(areas)
 
-mask = data.apply(check_goal_areas, axis=1)
+filtered_data = []
 
-# Apply the mask to filter the data
-filtered_data = data[mask]
+for index, row in data.iterrows():
+    if check_goal_areas(row):
+        filtered_data.append(row)
+        
+filtered_data = pandas.DataFrame(filtered_data)
 
-# Select only the 'name' and 'credits' columns
-filtered_data = filtered_data[['short_name', 'name', 'credits']]
+try:  
+    filtered_data = filtered_data[['short_name', 'name', 'credits']]
+except:
+    print("There are no classes that satisfy those goal areas. Try different combinations")
+    exit()
 
 # Print the filtered data
 print("Filtered Classes:")
