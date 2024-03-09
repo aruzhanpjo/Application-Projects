@@ -1,42 +1,62 @@
 package TaskScheduler;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-import java.time.LocalDate;
-import java.time.Month;
+import java.util.Iterator;
 
 public class Main {
     public static void main(String[] args) {
-        
-        //get input from the user
 
         Scanner scnr = new Scanner(System.in);
-        System.out.println("Enter the task:");
-        String task = scnr.nextLine();
 
-        System.out.printf("Enter the deadline for the '%s' (month/day): ", task);
+        List <Task> taskList = new ArrayList<Task>();
+        String task = "";
 
-        String[] part = scnr.nextLine().split(" ");
+        System.out.println("Enter today's date (mm/dd): ");
+        String[] curPart = scnr.nextLine().split("/");
+        int curMonth = Integer.parseInt(curPart[0]);
+        int curDay = Integer.parseInt(curPart[1]);
 
-        Month month = Month.valueOf(part[0].toUpperCase());
-        int day = Integer.parseInt(part[1]);
+        while (!task.equals("quit")) {
+            
+            System.out.println("Enter the task (or type 'quit'):");
+            task = scnr.nextLine();
 
-        LocalDate curDate = LocalDate.of(LocalDate.now().getYear(), month, day);
+            if (!task.equals("quit")) {
+                System.out.println("Enter the deadline for the task (mm/dd): ");
+                String[] part = scnr.nextLine().split("/");
+                int month = Integer.parseInt(part[0]);
+                int day = Integer.parseInt(part[1]);
+                int deadline = setDeadline(curMonth, curDay, month, day);
+                Task taskVar = new Task(task, deadline);
+                taskList.add(taskVar);
+            }
 
-        System.out.println(curDate);
-        if (curDate.isBefore(LocalDate.now())) {
-            System.out.println("Invalid date");
-            return;
+            TaskScheduler scheduler = new TaskScheduler();
+            scheduler.priority(taskList);
+            scheduler.printTaskList(scheduler.taskToday);
+            
         }
     }
-
+    
+    public static int setDeadline(int curMonth, int curDay, int month, int day) {
+        int deadline;
+        if (curMonth == month) {
+            return deadline = day - curDay;
+        } else {
+        // doesn't matter, as it is greater than 7 any way
+            return deadline = 8;
+        }
+    }       
 
 }
 
 class Task {
     private String task;
-    private boolean isCompleted;
-    private LocalDate deadline;
+    public boolean isCompleted;
+    private int deadline;
 
-    public Task(String task, LocalDate deadline) {
+    public Task(String task, int deadline) {
         this.task = task;
         this.deadline = deadline;
         this.isCompleted = false;
@@ -46,7 +66,7 @@ class Task {
         return this.task;
     }
 
-    public LocalDate getDeadline() {
+    public int getDeadline() {
         return this.deadline;
     }
 
@@ -55,7 +75,49 @@ class Task {
     }
 
     public boolean dueToday() {
-        int daysBefore = 
-        return this.deadline.isEqual(LocalDate.now());
+        return this.deadline >= 1 && this.deadline < 5;
     }
+
+    public boolean isOverdue() {
+        return this.deadline < 1;
+    }
+
+    public boolean dueLater() {
+        return this.deadline > 7;
+    }
+}
+
+
+class TaskScheduler extends Task{
+
+    List <Task> taskToday = new ArrayList<Task>();
+    List <Task> taskLater = new ArrayList<Task>();
+
+    public void priority(List<Task> taskList) {
+        for (int i = 0; i < taskList.size(); i++) {
+            if (taskList.get(i).dueToday() || taskList.get(i).isOverdue()) {
+                taskToday.add(taskList.get(i));
+            }
+            else {
+                taskLater.add(taskList.get(i));
+            }
+        }
+    }
+
+    public void deleteTask(List<Task> taskToday, String task) {
+        Iterator <Task> iterator = taskToday.iterator();
+        while (iterator.hasNext()) {
+            Task t = iterator.next();
+            if (t.isCompleted()) {
+                iterator.remove();
+            }
+        }
+    }
+    public void printTaskList(List<Task> taskList) {
+        for (Task task : taskToday) {
+            System.out.println(task.getName() + " is due today!");
+        }
+    }
+
+ 
 }
