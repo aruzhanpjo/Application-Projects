@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.List;
 
+// This program can aid as a task prioritization for students.
+// The code asks for a user input and stores the tasks in a list, then it 
+// filters the tasks based on the priority and the deadline
 
 public class Task {
     private String task;
