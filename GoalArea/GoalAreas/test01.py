@@ -1,8 +1,6 @@
-import csv
-'''
 import pandas
 
-data = pandas.read_csv('GoalArea/GoalAreas/gen_eds.csv')
+data = pandas.read_csv('GoalArea/GoalAreas/goalAreas.csv')
 
 while True:
     findVal = int(input("How many goal areas do you want to cover? Out of 4.(You can include W and L as well)\n"))
@@ -15,7 +13,17 @@ goalArea = set()
 for i in range(findVal):
     val = (input(f"Enter goal area {i + 1}: "))
     goalArea.add(val)
-    
+
+check = data.copy()
+for area in goalArea:
+    check = check[check['area'].str.contains(area)]
+print(check)
+
+filtered_data = check[['short_name', 'name', 'credits']]
+
+print(filtered_data)
+
+'''
 def check_goal_areas(row):
     areas = set(row['area'].split(', '))
     return goalArea.issubset(areas)
@@ -25,7 +33,7 @@ filtered_data = []
 for index, row in data.iterrows():
     if check_goal_areas(row):
         filtered_data.append(row)
-        
+
 filtered_data = pandas.DataFrame(filtered_data)
 
 try:  
@@ -39,10 +47,9 @@ print("Filtered Classes:")
 for index, row in filtered_data.iterrows():
     print(f"({row['short_name']}){row['name']}: {row['credits']} credits")
 '''
-
 #without pandas
 
-
+'''
 data = []
 with open('GoalArea/GoalAreas/data.csv') as file:
     csv_reader = csv.DictReader(file)
@@ -54,16 +61,17 @@ while True:
     if findVal <= 4:
         break
     print("Invalid input. Please try again.")
-    
+
+
 goalArea = set()
 for i in range(findVal):
     val = (input(f"Enter goal area {i + 1}: "))
     goalArea.add(val)
 
-def check_goal_areas(row):
-    areas = set(row['area'].split(', '))
-    return goalArea.intersection(areas)
 
+def check_goal_areas(row):
+    areas = row['area'].split(', ')
+    return any(area in areas for area in goalArea)
 
 filtered_data = []
 
@@ -78,4 +86,5 @@ if len(filtered_data) == 0:
 
 print("Filtered Classes:")
 for row in filtered_data:
-    print(f"{row['name']}: {row['credits']} credits")
+    print(f" {row['name']}: {row['credits']} credits")
+'''
