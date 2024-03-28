@@ -17,7 +17,7 @@ for i in range(findVal):
 check = data.copy()
 for area in goalArea:
     check = check[check['area'].str.contains(area)]
-print(check)
+#print(check)
 
 filtered_data = check[['short_name', 'name', 'credits']]
 
