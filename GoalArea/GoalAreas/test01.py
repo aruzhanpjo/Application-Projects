@@ -22,4 +22,7 @@ for area in goalArea:
 
 filtered_data = check[['short_name', 'name', 'credits', 'area']]
 
-print(filtered_data)
+if filtered_data.empty == False:
+    print(filtered_data)
+else:
+    print("No classes found. Try different goal areas.")
